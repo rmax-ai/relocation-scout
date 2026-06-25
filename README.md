@@ -80,7 +80,7 @@ Key invariants:
 
 | Document | Contents |
 |----------|----------|
-| [ARCHITECTURE.md](docs/architecture.md) | Component architecture, trust boundaries, data flow |
+| [architecture.md](docs/architecture.md) | Component architecture, trust boundaries, data flow |
 | [THREAT_MODEL.md](docs/threat-model.md) | 10 threats with attack paths, controls, residual risk |
 | [ROADMAP.md](docs/roadmap.md) | Phase breakdown with dependencies |
 | [AGENTS.md](AGENTS.md) | Coding agent conventions and change rules |

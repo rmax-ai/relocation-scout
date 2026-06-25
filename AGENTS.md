@@ -101,9 +101,9 @@ uv run pytest tests/ -v -k "scenario" # Scenario tests
 
 # Frontend
 cd frontend
-npm run lint                          # ESLint
-npm run typecheck                     # TypeScript checking
-npm test                              # Frontend tests
+npm run lint                          # oxlint (0 warnings required)
+npm run build                         # tsc + Vite build
+# npm test / npm run typecheck are not yet configured (frontend tests pending)
 
 # Full verification
 make verify                           # Runs all above + API health check
@@ -121,7 +121,7 @@ make verify                           # Runs all above + API health check
 
 ## TypeScript Conventions
 
-- React 18+ with TypeScript strict mode
+- React 19+ with TypeScript strict mode
 - TanStack Query v5 for server state
 - React Router v6 for routing
 - Tailwind CSS for styling

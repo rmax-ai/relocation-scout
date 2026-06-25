@@ -79,7 +79,11 @@ class ADKAgentRuntime:
         fixture_evidence: dict | None,
         preferences_context: dict,
     ) -> NeighbourhoodAssessment:
-        fixture_text = json.dumps(fixture_evidence, indent=2) if fixture_evidence else "No fixture data available"
+        fixture_text = (
+            json.dumps(fixture_evidence, indent=2)
+            if fixture_evidence
+            else "No fixture data available"
+        )
         prefs_text = json.dumps(preferences_context, indent=2)
 
         instruction = build_agent_system_prompt(
@@ -117,7 +121,9 @@ Fixture evidence:
 Provide your assessment as a JSON object."""
 
         response = await self._run_agent(
-            "neighbourhood_researcher", instruction, user_message,
+            "neighbourhood_researcher",
+            instruction,
+            user_message,
             "NeighbourhoodAssessment schema",
         )
 
@@ -133,7 +139,11 @@ Provide your assessment as a JSON object."""
     ) -> dict[str, Any]:
         listing_text = json.dumps(listing_data, indent=2)
         scores_text = json.dumps(deterministic_scores, indent=2)
-        nb_text = json.dumps(neighbourhood_assessment, indent=2) if neighbourhood_assessment else "No data"
+        nb_text = (
+            json.dumps(neighbourhood_assessment, indent=2)
+            if neighbourhood_assessment
+            else "No data"
+        )
         prefs_text = json.dumps(preferences_context, indent=2)
 
         # Sanitize the listing description
@@ -176,7 +186,9 @@ User preferences:
 Provide your qualitative evaluation as a JSON object."""
 
         response = await self._run_agent(
-            "qualitative_ranker", instruction, user_message,
+            "qualitative_ranker",
+            instruction,
+            user_message,
             "qualitative evaluation schema",
         )
 
@@ -210,7 +222,9 @@ only the provided data. Keep the summary to 2-4 sentences.""",
 Provide your shortlist synthesis as a JSON object."""
 
         response = await self._run_agent(
-            "shortlist_writer", instruction, user_message,
+            "shortlist_writer",
+            instruction,
+            user_message,
             "shortlist synthesis schema",
         )
 
@@ -246,7 +260,9 @@ User intent: {user_intent}
 Draft a professional inquiry email as a JSON object with 'subject' and 'body' fields."""
 
         response = await self._run_agent(
-            "message_drafter", instruction, user_message,
+            "message_drafter",
+            instruction,
+            user_message,
             "email draft schema",
         )
 

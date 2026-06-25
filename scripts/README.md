@@ -1,6 +1,10 @@
-# Scripts directory
+# Scripts
 
-# run_demo.sh — Start the full demo
-# reset_demo.sh — Reset database and re-seed
-# inject_failure.sh — Enable a failure injection scenario
-# verify_repository.sh — Run full verification suite
+- `run_adk.py` — Start backend in ADK/Gemini live mode
+- `run_adk.sh` — Shell wrapper for ADK mode
+- `test_adk.sh` — Test ADK runtime directly
+
+For demo/reset/failure injection, use the API endpoints directly or `make` targets:
+- `make demo` — Full demo startup
+- `make reset` — Reset database
+- POST `/api/demo/failures` — Configure failure injection

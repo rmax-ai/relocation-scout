@@ -11,8 +11,12 @@ router = APIRouter(prefix="/api/demo", tags=["demo"])
 
 @router.post("/seed")
 async def seed_database(session: AsyncSession = Depends(get_session)):
+    """Initialize database tables. Listing data is loaded from JSON fixtures at runtime."""
     await init_db()
-    return {"status": "seeded", "message": "Database tables created"}
+    return {
+        "status": "ready",
+        "message": "Database initialized. Listings load from data/*.json at workflow runtime.",
+    }
 
 
 @router.post("/reset")

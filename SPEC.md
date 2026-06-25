@@ -33,7 +33,7 @@ Key invariants:
 - [x] AC-3: .env.example with documented configuration
 
 ### Phase 2 — Persistence ✓
-- [x] AC-4: SQLAlchemy 2.0 models (11 entities)
+- [x] AC-4: SQLAlchemy 2.0 models (12 entities)
 - [x] AC-5: SQLite database with async session
 - [x] AC-6: Repository pattern per entity
 - [x] AC-7: Unit of Work transaction boundary
@@ -46,7 +46,7 @@ Key invariants:
 - [x] AC-12: Deterministic scoring (affordability, commute, neighbourhood, space)
 
 ### Phase 4 — Workflow Engine ✓
-- [x] AC-13: 14-step state machine with validated transitions
+- [x] AC-13: 13-step state machine with validated transitions
 - [x] AC-14: Workflow controller with step execution, retries, recovery
 - [x] AC-15: Persistent workflow state (resumable after crash)
 - [x] AC-16: Structured audit events at every step boundary
@@ -90,7 +90,7 @@ Key invariants:
 - [x] AC-44: Demo controls with failure injection
 
 ### Phase 10 — Frontend ✓
-- [x] AC-45: React 18 + TypeScript + Vite
+- [x] AC-45: React 19 + TypeScript + Vite
 - [x] AC-46: Tailwind CSS dark theme
 - [x] AC-47: TanStack Query v5 for server state
 - [x] AC-48: React Router v6 with 10 pages
