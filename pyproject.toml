@@ -1,0 +1,71 @@
+[project]
+name = "relocation-scout"
+version = "0.1.0"
+description = "Production-oriented agentic systems PoC: house-hunting assistant with governed AI workflow"
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.0.0",
+    "sqlalchemy>=2.0.35",
+    "aiosqlite>=0.20.0",
+    "alembic>=1.14.0",
+    "httpx>=0.28.0",
+    "tenacity>=9.0.0",
+    "structlog>=24.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "httpx>=0.28.0",
+    "ruff>=0.8.0",
+    "pyright>=1.1.390",
+]
+
+adk = [
+    "google-adk>=0.2.0",
+    "google-genai>=1.0.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["backend/src"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I",    # pycodestyle, pyflakes, isort
+    "N",                     # pep8-naming
+    "UP",                    # pyupgrade
+    "B",                     # flake8-bugbear
+    "C4",                    # flake8-comprehensions
+    "SIM",                   # flake8-simplify
+    "RUF",                   # ruff-specific
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["relocation_scout"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.pyright]
+include = ["backend/src"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+asyncio_mode = "auto"
+pythonpath = ["backend/src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend/src/relocation_scout"]

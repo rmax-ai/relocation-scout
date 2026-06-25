@@ -1,0 +1,143 @@
+{
+  "West": {
+    "quiet_score": 0.65,
+    "transport_score": 0.80,
+    "green_space_score": 0.60,
+    "summary": "Amsterdam West is a diverse residential area with good amenities. Parks like Erasmuspark and Rembrandtpark provide green space. Good tram and bus connections to the center.",
+    "strengths": [
+      "Diverse neighbourhood with character",
+      "Good public transport connections",
+      "Several large parks nearby"
+    ],
+    "concerns": [
+      "Some areas can be busy during rush hour",
+      "Limited parking availability"
+    ]
+  },
+  "De Baarsjes": {
+    "quiet_score": 0.70,
+    "transport_score": 0.75,
+    "green_space_score": 0.65,
+    "summary": "De Baarsjes is a popular neighbourhood in Amsterdam West, known for its multicultural character and proximity to parks. The area has undergone significant regeneration in recent years.",
+    "strengths": [
+      "Close to Vondelpark and Rembrandtpark",
+      "Multicultural with diverse food scene",
+      "Good tram connections"
+    ],
+    "concerns": [
+      "Some streets can be noisy",
+      "Rent prices increasing rapidly"
+    ]
+  },
+  "Oud-West": {
+    "quiet_score": 0.55,
+    "transport_score": 0.85,
+    "green_space_score": 0.55,
+    "summary": "Oud-West is a vibrant, trendy neighbourhood near the city center. Known for the Hallen food market and numerous bars and restaurants. Very well connected to the rest of Amsterdam.",
+    "strengths": [
+      "Excellent food and cultural scene at De Hallen",
+      "Very central location",
+      "Multiple tram lines"
+    ],
+    "concerns": [
+      "Can be noisy, especially on weekends",
+      "Above-average rent prices",
+      "Limited green space"
+    ]
+  },
+  "Zuid": {
+    "quiet_score": 0.85,
+    "transport_score": 0.90,
+    "green_space_score": 0.75,
+    "summary": "Amsterdam Zuid is an upscale residential area with excellent amenities. Close to Vondelpark, Beatrixpark, and the Zuidas business district. High-quality housing stock and good schools.",
+    "strengths": [
+      "Quiet, leafy streets",
+      "Excellent schools and amenities",
+      "Beatrixpark and Vondelpark nearby",
+      "Great public transport and road connections"
+    ],
+    "concerns": [
+      "Among the most expensive areas in Amsterdam",
+      "Can feel less lively than other neighbourhoods"
+    ]
+  },
+  "Oost": {
+    "quiet_score": 0.60,
+    "transport_score": 0.70,
+    "green_space_score": 0.70,
+    "summary": "Amsterdam Oost is a diverse and family-friendly area with Oosterpark and Flevopark providing plenty of green space. Good value for money compared to more central neighbourhoods.",
+    "strengths": [
+      "Oosterpark and Flevopark offer excellent green space",
+      "Family-friendly atmosphere",
+      "Relatively affordable"
+    ],
+    "concerns": [
+      "Longer commute to some parts of the city",
+      "Some areas still developing amenities"
+    ]
+  },
+  "Noord": {
+    "quiet_score": 0.75,
+    "transport_score": 0.55,
+    "green_space_score": 0.80,
+    "summary": "Amsterdam Noord is separated from the city center by the IJ river. Known for creative spaces, NDSM wharf, and more affordable housing. Ferry connections to central station are free and frequent.",
+    "strengths": [
+      "More affordable housing",
+      "Lots of green and open space",
+      "Creative and artistic community",
+      "Free ferries to central station"
+    ],
+    "concerns": [
+      "Ferry dependency for central access",
+      "Limited night-time public transport",
+      "Some areas have fewer local amenities"
+    ]
+  },
+  "Rivierenbuurt": {
+    "quiet_score": 0.78,
+    "transport_score": 0.75,
+    "green_space_score": 0.55,
+    "summary": "Rivierenbuurt is a quiet residential area in Amsterdam Zuid, close to the Amstel river and within cycling distance of the Zuidas. Known for its 1930s architecture and family-friendly character.",
+    "strengths": [
+      "Quiet, well-maintained streets",
+      "Close to the Amstel river",
+      "Good tram and train connections (RAI station)"
+    ],
+    "concerns": [
+      "Limited nightlife and entertainment",
+      "Some apartments have small layouts",
+      "Parking can be difficult"
+    ]
+  },
+  "Bos en Lommer": {
+    "quiet_score": 0.62,
+    "transport_score": 0.70,
+    "green_space_score": 0.58,
+    "summary": "Bos en Lommer is a rapidly developing neighbourhood in Amsterdam West. Close to Erasmuspark and with good access to both the ring road and public transport. Increasingly popular with young professionals and families.",
+    "strengths": [
+      "Erasmuspark is a major green space nearby",
+      "Good value for money",
+      "Improving amenities and new businesses opening"
+    ],
+    "concerns": [
+      "Some areas still have limited local shops",
+      "Ongoing construction in parts of the neighbourhood"
+    ]
+  },
+  "De Pijp": {
+    "quiet_score": 0.40,
+    "transport_score": 0.85,
+    "green_space_score": 0.45,
+    "summary": "De Pijp is one of Amsterdam's liveliest neighbourhoods, famous for the Albert Cuyp market. Extremely popular with students, young professionals, and expats. Dense urban living with everything on your doorstep.",
+    "strengths": [
+      "Albert Cuyp market and excellent food scene",
+      "Very central, walking distance to museums",
+      "Excellent public transport"
+    ],
+    "concerns": [
+      "Very noisy, especially near the market",
+      "Can feel overcrowded",
+      "Among the highest rent in Amsterdam"
+    ]
+  }
+}

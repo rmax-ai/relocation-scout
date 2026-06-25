@@ -1,0 +1,17 @@
+{
+  "name": "Demo Search — Amsterdam West",
+  "max_monthly_rent_eur": 2000,
+  "minimum_bedrooms": 2,
+  "minimum_area_m2": null,
+  "max_commute_minutes": 30,
+  "destination_address": "Amsterdam Centraal Station",
+  "preferred_neighbourhoods": ["West", "De Baarsjes", "Oud-West", "Rivierenbuurt"],
+  "excluded_neighbourhoods": ["Noord"],
+  "priorities": {
+    "quiet": 0.30,
+    "transport": 0.25,
+    "green_space": 0.20,
+    "affordability": 0.25
+  },
+  "free_text_preferences": "I work remotely most days but commute to the office 2x per week near Centraal. I value a quiet neighbourhood with good parks nearby for my dog. A balcony or garden would be ideal. I prefer modern kitchens and natural light."
+}
