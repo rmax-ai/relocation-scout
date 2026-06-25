@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class Permission(str, Enum):
+class Permission(StrEnum):
     READ_LISTINGS = "read:listings"
     READ_NEIGHBOURHOOD = "read:neighbourhood"
     READ_PREFERENCES = "read:preferences"

@@ -67,7 +67,7 @@ async def edit_action(
         raise HTTPException(404, "Action not found")
 
     new_payload = body.get("payload", json.loads(record.payload_json))
-    action = await approval_gateway.edit_action(record, new_payload)
+    await approval_gateway.edit_action(record, new_payload)
     await session.commit()
 
     return ActionResponse(
@@ -151,4 +151,4 @@ async def execute_action(
         result = await controller.execute_approved_action(record.search_id, action_id)
         return {"status": "executed", "result": result}
     except Exception as e:
-        raise HTTPException(500, f"Action execution failed: {e!s}")
+        raise HTTPException(500, f"Action execution failed: {e!s}") from e

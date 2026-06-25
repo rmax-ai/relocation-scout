@@ -48,6 +48,10 @@ select = [
     "SIM",                   # flake8-simplify
     "RUF",                   # ruff-specific
 ]
+ignore = [
+    "B008",  # FastAPI Depends in function args is idiomatic
+    "E501",  # Line length — LLM prompt strings need readability
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["relocation_scout"]

@@ -44,9 +44,9 @@ class TestHardConstraints:
     def test_over_budget_rejected(self):
         listing = make_listing(monthly_rent_eur=2500)
         prefs = make_preferences(max_monthly_rent_eur=2000)
-        passed, failures = check_hard_constraints(listing, prefs)
+        passed, _failures = check_hard_constraints(listing, prefs)
         assert not passed
-        assert any("Rent" in f for f in failures)
+        assert any("Rent" in f for f in _failures)
 
     def test_under_budget_accepted(self):
         listing = make_listing(monthly_rent_eur=1500)
@@ -57,7 +57,7 @@ class TestHardConstraints:
     def test_too_few_bedrooms_rejected(self):
         listing = make_listing(bedrooms=1)
         prefs = make_preferences(minimum_bedrooms=2)
-        passed, failures = check_hard_constraints(listing, prefs)
+        passed, _failures = check_hard_constraints(listing, prefs)
         assert not passed
 
     def test_excessive_commute_rejected(self):
@@ -66,13 +66,13 @@ class TestHardConstraints:
         commute = CommuteResult(
             listing_id="test-1", destination_address="A", duration_minutes=45.0, distance_km=15.0
         )
-        passed, failures = check_hard_constraints(listing, prefs, commute)
+        passed, _failures = check_hard_constraints(listing, prefs, commute)
         assert not passed
 
     def test_excluded_neighbourhood_rejected(self):
         listing = make_listing(neighbourhood="Noord")
         prefs = make_preferences(excluded_neighbourhoods=["Noord"])
-        passed, failures = check_hard_constraints(listing, prefs)
+        passed, _failures = check_hard_constraints(listing, prefs)
         assert not passed
 
     def test_all_constraints_passed(self):
@@ -81,7 +81,7 @@ class TestHardConstraints:
         commute = CommuteResult(
             listing_id="test-1", destination_address="A", duration_minutes=20.0, distance_km=5.0
         )
-        passed, failures = check_hard_constraints(listing, prefs, commute)
+        passed, _failures = check_hard_constraints(listing, prefs, commute)
         assert passed
 
 

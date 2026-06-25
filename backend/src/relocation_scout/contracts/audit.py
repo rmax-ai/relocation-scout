@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 
-class AuditEventType(str, Enum):
+class AuditEventType(StrEnum):
     # Workflow events
     WORKFLOW_STARTED = "workflow.started"
     WORKFLOW_STEP_STARTED = "workflow.step.started"
@@ -42,7 +42,7 @@ class AuditEventType(str, Enum):
     SYSTEM_RECOVERY = "system.recovery"
 
 
-class ActorType(str, Enum):
+class ActorType(StrEnum):
     SYSTEM = "system"
     DETERMINISTIC = "deterministic"
     AGENT = "agent"

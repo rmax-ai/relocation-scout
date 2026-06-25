@@ -41,7 +41,7 @@ class WorkflowController:
             current_step=None,
         )
 
-        run = await self.uow.workflow_runs.create(search_id, status=state.status.value)
+        await self.uow.workflow_runs.create(search_id, status=state.status.value)
         state.search_id = search_id
 
         self.audit.emit(
@@ -76,7 +76,7 @@ class WorkflowController:
             updated_at=run.updated_at,
         )
 
-    async def start_workflow(self, search_id: str, initial_data: dict = None) -> WorkflowState:
+    async def start_workflow(self, search_id: str, initial_data: dict | None = None) -> WorkflowState:
         """Start or resume workflow execution with optional initial context data."""
         state = await self.get_workflow_state(search_id)
         if not state:
@@ -106,7 +106,7 @@ class WorkflowController:
 
         return await self._execute_from(state)
 
-    async def _execute_from(self, state: WorkflowState, initial_data: dict = None) -> WorkflowState:
+    async def _execute_from(self, state: WorkflowState, initial_data: dict | None = None) -> WorkflowState:
         """Execute workflow steps from the given state."""
         ctx = WorkflowContext(search_id=state.search_id, state=state)
 
@@ -262,9 +262,7 @@ class WorkflowController:
         if action_record.status != "approved":
             raise ValueError(f"Action {action_id} is not approved (status: {action_record.status})")
 
-        # Verify payload hash
         payload = json.loads(action_record.payload_json)
-        current_hash = action_record.payload_hash
 
         # Check idempotency — has this already been executed?
         existing = await self.uow.completed_actions.get_by_idempotency_key(
@@ -473,7 +471,7 @@ class WorkflowController:
                 saveable[key] = (
                     value if isinstance(value, (dict, list, str, int, float, bool)) else str(value)
                 )
-        run = await self.uow.workflow_runs.get_latest(search_id)
+        _run = await self.uow.workflow_runs.get_latest(search_id)
         # Store minimal recovery data in metadata
         # Full recovery from DB records, not ctx.data
 

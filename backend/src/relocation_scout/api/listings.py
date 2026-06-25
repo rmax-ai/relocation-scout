@@ -25,8 +25,6 @@ async def get_listings(
     state = await controller.get_workflow_state(search_id)
 
     listings = []
-    commutes = {}
-    evaluations = {}
 
     if state and state.status.value not in ("created",):
         # Try to get from controller context

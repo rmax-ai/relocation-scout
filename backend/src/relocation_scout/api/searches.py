@@ -131,5 +131,5 @@ async def resume_search(search_id: str, session: AsyncSession = Depends(get_sess
 @router.post("/{search_id}/reset")
 async def reset_search(search_id: str, session: AsyncSession = Depends(get_session)):
     controller = WorkflowController(session)
-    state = await controller.create_workflow(search_id)
+    await controller.create_workflow(search_id)
     return {"status": "reset", "search_id": search_id}

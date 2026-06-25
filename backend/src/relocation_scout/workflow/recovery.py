@@ -51,7 +51,7 @@ def compute_resume_point(
             (WorkflowStatus.ACTION_EXECUTED, "finalize_workflow"),
         ]
 
-        for resume_status, next_step in reversed(pipeline):
+        for resume_status, _next_step in reversed(pipeline):
             if resume_status.value.replace("_", " ") in completed_steps or any(
                 step.startswith(resume_status.value) for step in completed_steps
             ):

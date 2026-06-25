@@ -209,7 +209,7 @@ class WorkflowSteps:
                 continue
 
             commute = CommuteResult(**commute_data)
-            passed, failures = check_hard_constraints(listing, preferences, commute)
+            passed, _failures = check_hard_constraints(listing, preferences, commute)
 
             nb_lower = listing.neighbourhood.lower().strip()
             nb_data = nb_assessments.get(nb_lower)
@@ -323,7 +323,7 @@ class WorkflowSteps:
 
         shortlist = []
         for rank, (lid, ev) in enumerate(ranked[:5], 1):
-            ld = next((l for l in listings_data if l["listing_id"] == lid), None)
+            ld = next((entry for entry in listings_data if entry["listing_id"] == lid), None)
             if ld:
                 commute_data = commutes.get(lid, {})
                 shortlist.append(

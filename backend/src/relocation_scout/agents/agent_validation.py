@@ -89,17 +89,17 @@ class AgentOutputValidator:
                 default = field_info.default
                 if default is not None and default != ...:
                     repaired[field_name] = default
-                elif field_info.annotation == str:
+                elif field_info.annotation is str:
                     repaired[field_name] = ""
-                elif field_info.annotation == float:
+                elif field_info.annotation is float:
                     repaired[field_name] = 0.0
-                elif field_info.annotation == int:
+                elif field_info.annotation is int:
                     repaired[field_name] = 0
-                elif field_info.annotation == bool:
+                elif field_info.annotation is bool:
                     repaired[field_name] = False
-                elif field_info.annotation == list:
+                elif field_info.annotation is list:
                     repaired[field_name] = []
-                elif field_info.annotation == dict:
+                elif field_info.annotation is dict:
                     repaired[field_name] = {}
 
         return repaired
