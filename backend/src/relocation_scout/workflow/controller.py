@@ -76,7 +76,9 @@ class WorkflowController:
             updated_at=run.updated_at,
         )
 
-    async def start_workflow(self, search_id: str, initial_data: dict | None = None) -> WorkflowState:
+    async def start_workflow(
+        self, search_id: str, initial_data: dict | None = None
+    ) -> WorkflowState:
         """Start or resume workflow execution with optional initial context data."""
         state = await self.get_workflow_state(search_id)
         if not state:
@@ -106,7 +108,9 @@ class WorkflowController:
 
         return await self._execute_from(state)
 
-    async def _execute_from(self, state: WorkflowState, initial_data: dict | None = None) -> WorkflowState:
+    async def _execute_from(
+        self, state: WorkflowState, initial_data: dict | None = None
+    ) -> WorkflowState:
         """Execute workflow steps from the given state."""
         ctx = WorkflowContext(search_id=state.search_id, state=state)
 

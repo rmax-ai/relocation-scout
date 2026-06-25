@@ -21,10 +21,12 @@ def check_hard_constraints(
     if listing.bedrooms < preferences.minimum_bedrooms:
         failures.append(f"Bedrooms {listing.bedrooms} below minimum {preferences.minimum_bedrooms}")
 
-    if preferences.minimum_area_m2 and listing.area_m2 and listing.area_m2 < preferences.minimum_area_m2:
-        failures.append(
-            f"Area {listing.area_m2}m² below minimum {preferences.minimum_area_m2}m²"
-        )
+    if (
+        preferences.minimum_area_m2
+        and listing.area_m2
+        and listing.area_m2 < preferences.minimum_area_m2
+    ):
+        failures.append(f"Area {listing.area_m2}m² below minimum {preferences.minimum_area_m2}m²")
 
     if commute and commute.duration_minutes > preferences.max_commute_minutes:
         failures.append(

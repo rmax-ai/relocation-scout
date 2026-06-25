@@ -103,7 +103,8 @@ uv run pytest tests/ -v -k "scenario" # Scenario tests
 cd frontend
 npm run lint                          # oxlint (0 warnings required)
 npm run build                         # tsc + Vite build
-# npm test / npm run typecheck are not yet configured (frontend tests pending)
+npm test                               # Vitest (8 component smoke tests)
+npm run typecheck                      # tsc --noEmit
 
 # Full verification
 make verify                           # Runs all above + API health check
