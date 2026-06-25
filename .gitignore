@@ -10,3 +10,8 @@ dist/
 .ruff_cache/
 node_modules/
 .DS_Store
+
+# Docs site build output
+docs/site/build/
+docs/site/.svelte-kit/
+docs/site/node_modules/
