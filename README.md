@@ -16,7 +16,14 @@ The LLM is a narrowly-scoped component inside a larger software system. The work
 
 ## Quick Start
 
+Prerequisites:
+- `uv` for Python dependency management
+- `npm` for frontend dependencies
+
 ```bash
+# Install uv if needed
+# macOS (Homebrew): brew install uv
+
 # Install dependencies
 make install
 
