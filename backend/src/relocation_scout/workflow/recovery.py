@@ -5,7 +5,7 @@ from relocation_scout.contracts.workflow import WorkflowStatus
 
 def get_next_step_for_status(status: WorkflowStatus) -> str | None:
     """Get the next step to execute based on current status."""
-    status_to_step: dict[WorkflowStatus, str] = {
+    status_to_step: dict[WorkflowStatus, str | None] = {
         WorkflowStatus.CREATED: "fetch_listings",
         WorkflowStatus.LISTINGS_FETCHED: "normalize_listings",
         WorkflowStatus.LISTINGS_NORMALIZED: "deduplicate_listings",

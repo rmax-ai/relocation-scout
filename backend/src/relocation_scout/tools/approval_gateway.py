@@ -4,15 +4,18 @@ import hashlib
 import json
 import uuid
 from datetime import datetime
+from typing import Literal, cast
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from relocation_scout.contracts.action import PendingAction
+from relocation_scout.contracts.action import ActionType, PendingAction
 from relocation_scout.contracts.approval import ApprovalDecision
 from relocation_scout.persistence.models import (
     ApprovalDecisionRecord,
     PendingActionRecord,
 )
+
+RiskLevel = Literal["low", "medium", "high"]
 
 
 def compute_payload_hash(payload: dict) -> str:
@@ -21,9 +24,21 @@ def compute_payload_hash(payload: dict) -> str:
 
 
 def compute_idempotency_key(
-    action_type: str, listing_id: str, recipient: str, payload_hash: str
+    action_type: ActionType, listing_id: str, recipient: str, payload_hash: str
 ) -> str:
     return f"{action_type}:{listing_id}:{recipient}:{payload_hash}"
+
+
+def _as_action_type(value: str) -> ActionType:
+    if value not in {"send_realtor_email", "create_viewing_request"}:
+        raise ValueError(f"Invalid action_type: {value}")
+    return cast(ActionType, value)
+
+
+def _as_risk_level(value: str) -> RiskLevel:
+    if value not in {"low", "medium", "high"}:
+        raise ValueError(f"Invalid risk_level: {value}")
+    return cast(RiskLevel, value)
 
 
 class ApprovalGateway:
@@ -33,10 +48,10 @@ class ApprovalGateway:
         self,
         session: AsyncSession,
         search_id: str,
-        action_type: str,
+        action_type: ActionType,
         target_listing_id: str,
         payload: dict,
-        risk_level: str = "low",
+        risk_level: RiskLevel = "low",
     ) -> PendingAction:
         payload_hash = compute_payload_hash(payload)
         idempotency_key = compute_idempotency_key(
@@ -136,8 +151,10 @@ class ApprovalGateway:
     ) -> PendingAction:
         """Edit action payload. Changes the hash, invalidating any prior approval."""
         new_hash = compute_payload_hash(new_payload)
+        action_type = _as_action_type(action.action_type)
+        risk_level = _as_risk_level(action.risk_level)
         new_idempotency_key = compute_idempotency_key(
-            action.action_type,
+            action_type,
             action.target_listing_id,
             new_payload.get("recipient", ""),
             new_hash,
@@ -152,12 +169,12 @@ class ApprovalGateway:
         return PendingAction(
             action_id=action.id,
             search_id=action.search_id,
-            action_type=action.action_type,
+            action_type=action_type,
             target_listing_id=action.target_listing_id,
             payload=new_payload,
             payload_hash=new_hash,
             idempotency_key=new_idempotency_key,
-            risk_level=action.risk_level,
+            risk_level=risk_level,
             status="draft",
         )
 

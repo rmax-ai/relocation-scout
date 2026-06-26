@@ -1,9 +1,17 @@
 from __future__ import annotations
 
+from typing import Protocol
+
 from relocation_scout.agents.mock_runtime import MockAgentRuntime
 from relocation_scout.contracts.demo import DemoFailures, DemoFailuresPatch
 
 _active_demo_failures = DemoFailures()
+
+
+class FailureInjectableSteps(Protocol):
+    _failure_injection: dict[str, bool]
+
+    def set_failure_injection(self, step: str, enabled: bool = True) -> None: ...
 
 
 def get_demo_failures() -> DemoFailures:
@@ -26,7 +34,7 @@ def update_demo_failures(patch: DemoFailuresPatch) -> DemoFailures:
     return get_demo_failures()
 
 
-def apply_demo_failures(steps: object) -> None:
+def apply_demo_failures(steps: FailureInjectableSteps) -> None:
     failures = get_demo_failures()
 
     if hasattr(steps, "_failure_injection"):
