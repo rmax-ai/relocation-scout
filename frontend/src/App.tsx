@@ -11,6 +11,7 @@ import { ShortlistPage } from './pages/ShortlistPage';
 import { ApprovalInboxPage } from './pages/ApprovalInboxPage';
 import { AuditLogPage } from './pages/AuditLogPage';
 import { DemoControlsPage } from './pages/DemoControlsPage';
+import { DemoSequencePage } from './pages/DemoSequencePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/searches/:id/approvals" element={<ApprovalInboxPage />} />
             <Route path="/searches/:id/audit" element={<AuditLogPage />} />
             <Route path="/demo" element={<DemoControlsPage />} />
+            <Route path="/demo-sequence" element={<DemoSequencePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

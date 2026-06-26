@@ -42,7 +42,7 @@ async def get_workflow_steps(search_id: str, session: AsyncSession = Depends(get
     if not run:
         raise HTTPException(404, "No workflow found")
 
-    steps = run.step_executions
+    steps = await uow.step_executions.get_by_workflow_run(run.id)
     return [
         {
             "id": s.id,

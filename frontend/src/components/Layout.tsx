@@ -12,6 +12,7 @@ const navItems = [
   { to: '/approvals', label: 'Approvals', icon: '◎' },
   { to: '/audit', label: 'Audit Log', icon: '☷' },
   { to: '/demo', label: 'Demo Controls', icon: '⚡' },
+  { to: '/demo-sequence', label: 'Demo Sequence', icon: '⌘' },
 ];
 
 export function Layout() {

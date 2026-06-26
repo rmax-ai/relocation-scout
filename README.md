@@ -37,6 +37,66 @@ make demo
 Backend: http://localhost:8000/docs (OpenAPI)
 Frontend: http://localhost:5173
 
+## API Demo Sequence (Example)
+
+```bash
+# 1) Reset demo state
+curl -s -X POST http://localhost:8000/api/demo/reset
+# {"status":"reset","message":"Database dropped and recreated"}
+
+# 2) Create search
+curl -s -X POST http://localhost:8000/api/searches \
+  -H "content-type: application/json" \
+  -d '{
+    "name": "Demo search",
+    "preferences": {
+      "max_monthly_rent_eur": 2500,
+      "minimum_bedrooms": 2,
+      "minimum_area_m2": 60,
+      "max_commute_minutes": 45,
+      "destination_address": "Amsterdam Centraal",
+      "preferred_neighbourhoods": ["West", "Oost"],
+      "excluded_neighbourhoods": [],
+      "priorities": {
+        "quiet": 0.25,
+        "transport": 0.25,
+        "green_space": 0.25,
+        "affordability": 0.25
+      }
+    }
+  }'
+# {"id":"<search_id>","status":"created",...}
+
+# 3) Start workflow
+curl -s -X POST http://localhost:8000/api/searches/<search_id>/start
+# {"search_id":"<search_id>","status":"awaiting_approval","current_step":"create_pending_action",...}
+
+# 4) Check workflow status
+curl -s http://localhost:8000/api/searches/<search_id>/workflow
+# {"search_id":"<search_id>","status":"awaiting_approval",...}
+
+# 5) List pending actions
+curl -s http://localhost:8000/api/searches/<search_id>/actions
+# [{"action_id":"<action_id>","action_type":"send_realtor_email","status":"draft",...}]
+
+# 6) Approve + execute action
+curl -s -X POST http://localhost:8000/api/actions/<action_id>/approve \
+  -H "content-type: application/json" \
+  -d '{"approved_by":"demo_user","comment":"approved in demo"}'
+# {"approval_id":"<approval_id>","decision":"approved",...}
+
+curl -s -X POST http://localhost:8000/api/actions/<action_id>/execute
+# {"status":"executed","result":{"email_id":"<email_id>","status":"sent",...}}
+
+# 7) Confirm completed workflow
+curl -s http://localhost:8000/api/searches/<search_id>/workflow
+# {"search_id":"<search_id>","status":"completed",...}
+
+# Optional: inspect step executions
+curl -s http://localhost:8000/api/searches/<search_id>/workflow/steps
+# []
+```
+
 ## Environment
 
 Copy `.env.example` to `.env`. Defaults work for mock mode (no API keys required).
