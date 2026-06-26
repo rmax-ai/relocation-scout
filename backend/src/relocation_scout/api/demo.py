@@ -3,8 +3,14 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from relocation_scout.contracts.demo import DemoFailures, DemoFailuresPatch
 from relocation_scout.dependencies import get_session
 from relocation_scout.persistence.database import drop_db, init_db
+from relocation_scout.workflow.failure_injection import (
+    get_demo_failures,
+    reset_demo_failures,
+    update_demo_failures,
+)
 
 router = APIRouter(prefix="/api/demo", tags=["demo"])
 
@@ -23,31 +29,15 @@ async def seed_database(session: AsyncSession = Depends(get_session)):
 async def reset_demo(session: AsyncSession = Depends(get_session)):
     await drop_db()
     await init_db()
+    reset_demo_failures()
     return {"status": "reset", "message": "Database dropped and recreated"}
 
 
-@router.post("/failures")
-async def set_failure_injection(body: dict, session: AsyncSession = Depends(get_session)):
-    """Enable failure injection for specific scenarios."""
-    failure_type = body.get("type", "")
-    enabled = body.get("enabled", True)
-
-    # Store failure injection config in session state
-    # For now, log the request
-    return {"status": "configured", "failure_type": failure_type, "enabled": enabled}
+@router.post("/failures", response_model=DemoFailures)
+async def set_failure_injection(body: DemoFailuresPatch) -> DemoFailures:
+    return update_demo_failures(body)
 
 
-@router.get("/failures")
-async def get_failure_config():
-    return {
-        "available_failures": [
-            "malformed_agent_output",
-            "neighbourhood_agent_failure",
-            "commute_service_timeout",
-            "crash_before_email_send",
-            "crash_after_email_send",
-            "crash_before_persist",
-            "duplicate_workflow",
-            "email_fail",
-        ]
-    }
+@router.get("/failures", response_model=DemoFailures)
+async def get_failure_config() -> DemoFailures:
+    return get_demo_failures()

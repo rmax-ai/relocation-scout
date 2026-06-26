@@ -17,6 +17,7 @@ from relocation_scout.observability.events import AuditLogger
 from relocation_scout.observability.tracing import metrics
 from relocation_scout.persistence.unit_of_work import UnitOfWork
 from relocation_scout.tools.email import MockEmailService
+from relocation_scout.workflow.failure_injection import apply_demo_failures
 from relocation_scout.workflow.policies import get_policy_for_step
 from relocation_scout.workflow.recovery import get_next_step_for_status
 from relocation_scout.workflow.retries import retry_with_policy
@@ -32,6 +33,7 @@ class WorkflowController:
         self.uow = UnitOfWork(session)
         self.audit = AuditLogger(session)
         self.steps = WorkflowSteps(self.audit)
+        apply_demo_failures(self.steps)
 
     async def create_workflow(self, search_id: str) -> WorkflowState:
         """Create a new workflow run for a search."""
@@ -305,6 +307,9 @@ class WorkflowController:
 
         # Invoke email service
         try:
+            if self.steps._failure_injection.get("crash_before_email_send", False):
+                raise RuntimeError("CRASH_INJECTED: before email send")
+
             email_service = MockEmailService(self.session)
             if self.steps._failure_injection.get("email_fail", False):
                 raise RuntimeError("Simulated email failure")

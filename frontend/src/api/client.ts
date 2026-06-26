@@ -1,4 +1,48 @@
-const API_BASE = 'http://localhost:8000';
+function getApiBase(): string {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  if (typeof window === 'undefined') {
+    return 'http://localhost:8000';
+  }
+
+  return `${window.location.protocol}//${window.location.hostname}:8000`;
+}
+
+const API_BASE = getApiBase();
+
+function formatValidationDetail(detail: unknown): string | null {
+  if (typeof detail === 'string') {
+    return detail;
+  }
+
+  if (!Array.isArray(detail)) {
+    return null;
+  }
+
+  const messages = detail
+    .map((item) => {
+      if (!item || typeof item !== 'object') {
+        return null;
+      }
+
+      const loc = Array.isArray((item as Record<string, unknown>).loc)
+        ? ((item as Record<string, unknown>).loc as unknown[])
+            .map((part) => String(part))
+            .join('.')
+        : 'request';
+      const msg =
+        typeof (item as Record<string, unknown>).msg === 'string'
+          ? (item as Record<string, unknown>).msg
+          : 'Invalid request';
+
+      return `${loc}: ${msg}`;
+    })
+    .filter((message): message is string => Boolean(message));
+
+  return messages.length > 0 ? messages.join('; ') : null;
+}
 
 export class ApiError extends Error {
   status: number;
@@ -32,7 +76,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     throw new ApiError(
       response.status,
       data && typeof data === 'object' && 'detail' in data
-        ? String((data as Record<string, unknown>).detail)
+        ? formatValidationDetail((data as Record<string, unknown>).detail) ?? `HTTP ${response.status}`
         : `HTTP ${response.status}`,
       data,
     );

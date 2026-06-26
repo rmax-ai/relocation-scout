@@ -128,6 +128,9 @@ class WorkflowSteps:
         )
 
     async def calculate_commutes(self, ctx: WorkflowContext) -> StepResult:
+        if self._failure_injection.get("commute_timeout", False):
+            raise TimeoutError("Simulated commute timeout")
+
         listings_data = ctx.data.get("normalized_listings", [])
         preferences = HousingPreferences(**ctx.data["preferences"])
 

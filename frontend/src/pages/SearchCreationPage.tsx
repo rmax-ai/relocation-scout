@@ -28,18 +28,25 @@ function validatePriorities(p: SearchPreferences['priorities']): boolean {
 
 export function SearchCreationPage() {
   const navigate = useNavigate();
+  const [name, setName] = useState('Amsterdam rental search');
   const [form, setForm] = useState<SearchPreferences>(defaultPreferences);
+  const [nameError, setNameError] = useState('');
   const [priorityError, setPriorityError] = useState('');
   const [preferredInput, setPreferredInput] = useState('');
   const [excludedInput, setExcludedInput] = useState('');
 
   const createMutation = useMutation({
     mutationFn: () => {
+      const trimmedName = name.trim();
+      if (!trimmedName) {
+        setNameError('Search name is required');
+        throw new Error('Invalid search name');
+      }
       if (!validatePriorities(form.priorities)) {
         setPriorityError('Priority weights must sum to 100%');
         throw new Error('Invalid priorities');
       }
-      return searchesApi.create(form);
+      return searchesApi.create({ name: trimmedName, preferences: form });
     },
     onSuccess: (search) => {
       navigate(`/searches/${search.id}`);
@@ -48,12 +55,18 @@ export function SearchCreationPage() {
 
   const createAndStartMutation = useMutation({
     mutationFn: async () => {
+      const trimmedName = name.trim();
+      if (!trimmedName) {
+        setNameError('Search name is required');
+        throw new Error('Invalid search name');
+      }
       if (!validatePriorities(form.priorities)) {
         setPriorityError('Priority weights must sum to 100%');
         throw new Error('Invalid priorities');
       }
-      const search = await searchesApi.create(form);
-      return searchesApi.start(search.id);
+      const search = await searchesApi.create({ name: trimmedName, preferences: form });
+      await searchesApi.start(search.id);
+      return search;
     },
     onSuccess: (search) => {
       navigate(`/searches/${search.id}`);
@@ -115,6 +128,23 @@ export function SearchCreationPage() {
       <h2 className="text-xl font-bold text-slate-100 mb-6">Create New Search</h2>
 
       <div className="space-y-6">
+        <section className="bg-slate-800 rounded-lg border border-slate-700 p-5">
+          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">
+            Search Name
+          </h3>
+          {nameError && <p className="text-xs text-red-400 mb-3">{nameError}</p>}
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => {
+              setNameError('');
+              setName(e.target.value);
+            }}
+            placeholder="e.g. Amsterdam rental search"
+            className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+          />
+        </section>
+
         {/* Budget & Requirements */}
         <section className="bg-slate-800 rounded-lg border border-slate-700 p-5">
           <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">

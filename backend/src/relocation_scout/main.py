@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -14,6 +15,8 @@ from relocation_scout.api.workflow import router as workflow_router
 from relocation_scout.config import settings
 from relocation_scout.observability.logging import setup_logging
 from relocation_scout.persistence.database import init_db
+
+START_TIME = time.monotonic()
 
 
 @asynccontextmanager
@@ -32,7 +35,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -48,4 +56,11 @@ app.include_router(demo_router)
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "runtime": settings.agent_runtime}
+    database = "sqlite" if settings.database_url.startswith("sqlite") else "unknown"
+    return {
+        "status": "ok",
+        "version": app.version,
+        "agent_runtime": settings.agent_runtime,
+        "database": database,
+        "uptime_seconds": int(time.monotonic() - START_TIME),
+    }
