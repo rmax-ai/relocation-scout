@@ -3,6 +3,7 @@ from __future__ import annotations
 import time
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -19,9 +20,38 @@ from relocation_scout.persistence.database import init_db
 START_TIME = time.monotonic()
 
 
+async def verify_google_api_key(api_key: str) -> None:
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+    payload = {
+        "contents": [{"parts": [{"text": "Reply with OK"}]}],
+        "generationConfig": {"maxOutputTokens": 8, "temperature": 0},
+    }
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.post(url, params={"key": api_key}, json=payload)
+
+    if response.status_code != 200:
+        detail = ""
+        try:
+            detail = response.json().get("error", {}).get("message", "")
+        except ValueError:
+            detail = response.text[:200]
+        raise RuntimeError(
+            f"Gemini API key validation failed ({response.status_code}): {detail or 'unknown error'}"
+        )
+
+
+async def validate_runtime_configuration() -> None:
+    if settings.agent_runtime != "adk":
+        return
+    if not settings.google_api_key:
+        raise ValueError("GOOGLE_API_KEY required when AGENT_RUNTIME=adk")
+    await verify_google_api_key(settings.google_api_key)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     setup_logging()
+    await validate_runtime_configuration()
     await init_db()
     yield
 
