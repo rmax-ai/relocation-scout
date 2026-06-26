@@ -16,3 +16,6 @@ node_modules/
 docs/site/build/
 docs/site/.svelte-kit/
 docs/site/node_modules/
+frontend/playwright-report/
+frontend/test-results/
+frontend/.playwright/
