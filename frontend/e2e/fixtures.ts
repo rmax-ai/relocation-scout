@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { resetDemoState, seedDemoState } from './helpers/demoState';
+import { resetDemoState, seedDemoState } from './helpers/demoState.js';
 
 type DemoStateHelpers = {
   reset: () => Promise<void>;
@@ -8,8 +8,8 @@ type DemoStateHelpers = {
 };
 
 export const test = base.extend<{ demoState: DemoStateHelpers }>({
-  demoState: async ({ request }, use) => {
-    await use({
+  demoState: async ({ request }, applyDemoState) => {
+    await applyDemoState({
       reset: async () => resetDemoState(request),
       seed: async () => seedDemoState(request),
       resetAndSeed: async () => {

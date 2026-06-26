@@ -63,7 +63,7 @@ describe('searchesApi', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:8000/api/searches',
+      '/api/searches',
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify({
@@ -141,10 +141,10 @@ describe('searchesApi', () => {
           preferences_text: '',
         },
       }),
-    ).rejects.toMatchObject<ApiError>({
+    ).rejects.toMatchObject({
       message: 'body.name: Field required; body.preferences: Field required',
       status: 422,
-    });
+    } satisfies Partial<ApiError>);
   });
 
   it('returns workflow start metadata separately from created search records', async () => {
@@ -226,7 +226,7 @@ describe('searchesApi', () => {
     expect(started).toMatchObject({ search_id: 'search-1', status: 'running' });
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      'http://localhost:8000/api/searches/search-1/start',
+      '/api/searches/search-1/start',
       expect.objectContaining({ method: 'POST' }),
     );
   });

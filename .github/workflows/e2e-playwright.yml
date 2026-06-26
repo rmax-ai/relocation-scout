@@ -1,0 +1,89 @@
+name: Playwright E2E gate
+
+on:
+  pull_request:
+    paths:
+      - 'backend/src/**'
+      - 'backend/tests/**'
+      - 'frontend/src/**'
+      - 'frontend/e2e/**'
+      - 'frontend/playwright.config.ts'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - '.github/workflows/e2e-playwright.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/src/**'
+      - 'backend/tests/**'
+      - 'frontend/src/**'
+      - 'frontend/e2e/**'
+      - 'frontend/playwright.config.ts'
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+      - '.github/workflows/e2e-playwright.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: playwright-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-and-critical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CI: true
+      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: Install backend dependencies
+        run: uv sync --frozen
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Chromium browser
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Run smoke and critical flow specs
+        working-directory: frontend
+        run: npm run test:e2e -- e2e/routes-smoke.spec.ts e2e/smoke/mobile-smoke.spec.ts e2e/flows/phase-2-core-flows.spec.ts
+
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            frontend/test-results/**
+            frontend/playwright-report/**
+          if-no-files-found: ignore
+          retention-days: 14

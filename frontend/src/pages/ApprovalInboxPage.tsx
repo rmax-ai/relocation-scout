@@ -79,7 +79,13 @@ export function ApprovalInboxPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ actionId, data }: { actionId: string; data: Record<string, unknown> }) =>
+    mutationFn: ({
+      actionId,
+      data,
+    }: {
+      actionId: string;
+      data: { payload: { recipient: string; subject: string; body: string } };
+    }) =>
       actionsApi.update(actionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['actions', id] });
@@ -156,7 +162,13 @@ export function ApprovalInboxPage() {
                 onSave={() =>
                   updateMutation.mutate({
                     actionId: action.id,
-                    data: { body: editBody, subject: editSubject },
+                    data: {
+                      payload: {
+                        recipient: action.recipient,
+                        subject: editSubject,
+                        body: editBody,
+                      },
+                    },
                   })
                 }
                 onCancelEdit={() => setEditingId(null)}

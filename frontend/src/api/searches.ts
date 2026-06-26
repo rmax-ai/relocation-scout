@@ -29,10 +29,18 @@ type BackendSearch = {
   preferences: BackendSearchPreferences;
 };
 
+type BackendWorkflowStatus = {
+  status: string;
+  current_step: string | null;
+  completed_steps: string[];
+};
+
 type CreateSearchRequest = {
   name: string;
   preferences: SearchPreferences;
 };
+
+const TOTAL_WORKFLOW_STEPS = 11;
 
 function normalizePriorities(priorities: SearchPreferences['priorities']): BackendPriorityWeights {
   return {
@@ -80,6 +88,51 @@ function toFrontendPreferences(preferences: BackendSearchPreferences): SearchPre
   };
 }
 
+function mapSearchStatus(
+  workflowStatus: string | null | undefined,
+  fallbackStatus: Search['status'],
+): Search['status'] {
+  if (!workflowStatus) {
+    return fallbackStatus;
+  }
+
+  if (workflowStatus === 'failed') {
+    return 'failed';
+  }
+
+  if (workflowStatus === 'completed') {
+    return 'completed';
+  }
+
+  if (workflowStatus === 'awaiting_approval') {
+    return 'waiting_approval';
+  }
+
+  if (workflowStatus === 'created') {
+    return 'created';
+  }
+
+  return 'running';
+}
+
+function toProgressPercentage(
+  workflow: BackendWorkflowStatus | null,
+  status: Search['status'],
+): number {
+  if (status === 'completed') {
+    return 100;
+  }
+
+  if (!workflow) {
+    return 0;
+  }
+
+  return Math.min(
+    100,
+    Math.round((workflow.completed_steps.length / TOTAL_WORKFLOW_STEPS) * 100),
+  );
+}
+
 function toFrontendSearch(search: BackendSearch): Search {
   return {
     id: search.id,
@@ -94,27 +147,52 @@ function toFrontendSearch(search: BackendSearch): Search {
   };
 }
 
-function toFrontendSearchSummary(search: BackendSearch): SearchSummary {
-  const normalized = toFrontendSearch(search);
+function mergeWorkflowIntoSearch(
+  search: Search,
+  workflow: BackendWorkflowStatus | null,
+): Search {
+  const status = mapSearchStatus(workflow?.status, search.status);
   return {
-    id: normalized.id,
-    name: normalized.name,
-    status: normalized.status,
-    progress_percentage: normalized.progress_percentage,
-    current_step: normalized.current_step,
-    created_at: normalized.created_at,
+    ...search,
+    status,
+    progress_percentage: toProgressPercentage(workflow, status),
+    current_step: workflow?.current_step ?? '',
+    completed_at: status === 'completed' ? search.updated_at : null,
+  };
+}
+
+async function getWorkflowStatus(searchId: string): Promise<BackendWorkflowStatus | null> {
+  try {
+    return await api.get<BackendWorkflowStatus>(`/api/searches/${searchId}/workflow`);
+  } catch {
+    return null;
+  }
+}
+
+function toFrontendSearchSummary(search: Search): SearchSummary {
+  return {
+    id: search.id,
+    name: search.name,
+    status: search.status,
+    progress_percentage: search.progress_percentage,
+    current_step: search.current_step,
+    created_at: search.created_at,
   };
 }
 
 export const searchesApi = {
-  list: async () => {
-    const searches = await api.get<BackendSearch[]>('/api/searches');
-    return searches.map(toFrontendSearchSummary);
-  },
+  list: async () =>
+    Promise.all(
+      (await api.get<BackendSearch[]>('/api/searches')).map(async (search) => {
+        const workflow = await getWorkflowStatus(search.id);
+        return toFrontendSearchSummary(mergeWorkflowIntoSearch(toFrontendSearch(search), workflow));
+      }),
+    ),
 
   get: async (id: string) => {
     const search = await api.get<BackendSearch>(`/api/searches/${id}`);
-    return toFrontendSearch(search);
+    const workflow = await getWorkflowStatus(id);
+    return mergeWorkflowIntoSearch(toFrontendSearch(search), workflow);
   },
 
   create: async ({ name, preferences }: CreateSearchRequest) => {

@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures';
+import { expect, test } from './fixtures.js';
 
 test.describe('app shell', () => {
   test('renders the empty searches state against the mock backend', async ({ page, demoState }) => {
@@ -6,7 +6,7 @@ test.describe('app shell', () => {
 
     await page.goto('/searches');
 
-    await expect(page.getByText('No Searches')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'No Searches' })).toBeVisible();
     await expect(page.getByText('Create your first search to get started.')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Create New Search' })).toBeVisible();
   });
