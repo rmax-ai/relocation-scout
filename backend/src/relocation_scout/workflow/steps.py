@@ -91,7 +91,7 @@ class WorkflowSteps:
                 metadata={"reasons": s.suspicion_reasons},
             )
 
-        ctx.data["normalized_listings"] = [n.model_dump() for n in normalized]
+        ctx.data["normalized_listings"] = [n.model_dump(mode="json") for n in normalized]
         self.audit.emit(
             AuditEventType.WORKFLOW_STEP_COMPLETED,
             ActorType.DETERMINISTIC,
@@ -110,7 +110,7 @@ class WorkflowSteps:
         listings = [NormalizedListing(**d) for d in ctx.data.get("normalized_listings", [])]
         before = len(listings)
         deduped = deduplicate_listings(listings)
-        ctx.data["normalized_listings"] = [n.model_dump() for n in deduped]
+        ctx.data["normalized_listings"] = [n.model_dump(mode="json") for n in deduped]
         ctx.data["deduplicated"] = True
         removed = before - len(deduped)
         self.audit.emit(
